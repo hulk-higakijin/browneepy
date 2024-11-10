@@ -102,28 +102,37 @@ CATEGORIES = [
     },
 ]
 
-def customer_information(name: str, operated_at: datetime, menuSlugs: str, phone_number: str):
-  price = 0
+COUPONS = [
+  { "slug": 'double', "name": "セット割引", "discount": 10000 },
+  { "slug": "influencer", "name": "インフルエンサー割引", "discount": 20000 },
+]
+
+def customer_information(name: str, name_kana: str, operated_at: datetime, menuSlugs: str, couponSlugs: str, phone_number: str):
   parsed_menus = [menu for category in CATEGORIES for menu in category["menus"]]
   my_menus = list(filter(lambda x: x["slug"] in menuSlugs, parsed_menus))
+  my_coupons = list(filter(lambda x: x["slug"] in couponSlugs, COUPONS))
+
+  price = sum([menu["price"] for menu in my_menus]) - sum([coupon['discount'] for coupon in my_coupons])
 
   return f"""
 ★ソウル★
-●お名前 : {name}
+●お名前 : {name}({name_kana})
 ●施術日時: {operated_at.strftime("%Y年%m月%d日(%a) %H:%M")}
 ●施術内容: {', '.join([menu["name"] for menu in my_menus])}
-●現地払い: {price}ウォン（⚠️現金金額)
+●現地払い: {format(price, ',')}ウォン（⚠️現金金額)
 ●ご連絡先: {phone_number}
 """
 
 def main():
-  info = customer_information(
-    name="真庭治久",
-    operated_at=datetime.datetime(2024, 10, 11, 17, 00),
-    menuSlugs=['naturalHairLine', 'nippleArt', 'smpCounseling'],
-    phone_number="010-1234-5678"
-  )
+  customer_data = {
+    "name": "",
+    "name_kana": '',
+    "operated_at": datetime.datetime(2024, 1, 1, 0, 0),
+    "menuSlugs": [],
+    "couponSlugs": [],
+    "phone_number": ""
+  }
 
-  print("\n".join([info, NOTIFICATIONS]))
+  print("\n".join([customer_information(**customer_data), NOTIFICATIONS]))
 
 main()
