@@ -117,7 +117,7 @@ def customer_information(name: str, name_hangul: str, operated_at: datetime, men
 ★ソウル★
 ●お名前 : {name}({name_hangul})
 ●施術日時: {operated_at.strftime("%Y年%m月%d日(%a) %H:%M")}
-●施術内容: {', '.join([menu["name"] for menu in my_menus])}
+●施術内容: {', '.join([menu["name"] for menu in my_menus])}(SNSイベント)
 ●現地払い: {format(price, ',')}ウォン{influencerName and f'（{influencerName}割引）' or ''}（⚠️現金金額) 
 ●ご連絡先: {phone_number}
 """
