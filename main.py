@@ -21,17 +21,16 @@ CATEGORIES = [
       "slug": "eyebrow",
       "name": "眉毛",
       "menus": [
-        { "slug": "naturalEyebrow", "name": "自然眉毛（エンボ）", "price": 200000 },
-        { "slug": "powderEyebrow", "name": "パウダー眉毛", "price": 250000 },
-        { "slug": "comboEyebrow", "name": "コンボ眉毛", "price": 250000 },
+        { "slug": "naturalEyebrow", "name": "自然眉毛（エンボ）", "price": 200000, 'description': '「眉毛アート」「アイブロウ」のデフォルト技法。「眉毛」「エンボ」のこと' },
+        { "slug": "powderEyebrow", "name": "パウダー眉毛", "price": 250000, 'description': '「パウダー」のこと' },
+        { "slug": "comboEyebrow", "name": "コンボ眉毛", "price": 250000, 'description': '「コンボ」のこと' },
       ],
     },
     {
       "slug": "lip",
       "name": "リップ",
       "menus": [
-        { "slug": "fullLip", "name": "フルリップ", "price": 320000 },
-        { "slug": "gradientLip", "name": "グラデーションリップ", "price": 320000 },
+        { "slug": "lipArt", "name": "リップアートメイク", "price": 320000  },
       ],
     },
     {
@@ -39,14 +38,14 @@ CATEGORIES = [
       "name": "顔",
       "menus": [
         { "slug": "skinplanning", "name": "スキンプランニング", "price": 150000 },
-        { "slug": "mole", "name": "美人ホクロ", "price": 40000 },
+        { "slug": "mole", "name": "美人ホクロ", "price": 40000, "description": '「ホクロ」のこと' },
       ],
     },
     {
       "slug": "hairline",
       "name": "ヘアライン",
       "menus": [
-        { "slug": "naturalHairLine", "name": "自然ヘアライン", "price": 320000 },
+        { "slug": "naturalHairLine", "name": "自然ヘアライン", "price": 320000, "description": '「ヘアライン」のデフォルト技法' },
         {
           "slug": "gradationHairLine",
           "name": "グラデーションヘアライン",
@@ -82,8 +81,8 @@ CATEGORIES = [
           "price": 70000,
         },
         {
-          "slug": "howToReproLift", 
-          "name": "ハウツリプロリフト",
+          "slug": "hollywoodBrowLift", 
+          "name": "ハリウッドブロウリフト",
           "price": 40000,
         },
       ],
@@ -107,7 +106,7 @@ COUPONS = [
   { "slug": "influencer", "name": "インフルエンサー割引", "discount": 20000 },
 ]
 
-def customer_information(name: str, name_kana: str, operated_at: datetime, menuSlugs: str, couponSlugs: str, phone_number: str):
+def customer_information(name: str, name_hangul: str, operated_at: datetime, menuSlugs: str, couponSlugs: str, phone_number: str, influencerName: str = None):
   parsed_menus = [menu for category in CATEGORIES for menu in category["menus"]]
   my_menus = list(filter(lambda x: x["slug"] in menuSlugs, parsed_menus))
   my_coupons = list(filter(lambda x: x["slug"] in couponSlugs, COUPONS))
@@ -116,21 +115,22 @@ def customer_information(name: str, name_kana: str, operated_at: datetime, menuS
 
   return f"""
 ★ソウル★
-●お名前 : {name}({name_kana})
+●お名前 : {name}({name_hangul})
 ●施術日時: {operated_at.strftime("%Y年%m月%d日(%a) %H:%M")}
 ●施術内容: {', '.join([menu["name"] for menu in my_menus])}
-●現地払い: {format(price, ',')}ウォン（⚠️現金金額)
+●現地払い: {format(price, ',')}ウォン{influencerName and f'（{influencerName}割引）' or ''}（⚠️現金金額) 
 ●ご連絡先: {phone_number}
 """
 
 def main():
   customer_data = {
     "name": "",
-    "name_kana": '',
+    "name_hangul": '',
     "operated_at": datetime.datetime(2024, 1, 1, 0, 0),
-    "menuSlugs": [],
-    "couponSlugs": [],
-    "phone_number": ""
+    "menuSlugs": [],      # ex). ['naturalHairLine', 'mole']
+    "couponSlugs": [],    # ex). ['double', 'influencer']
+    "phone_number": "",
+    "influencerName": "", # nullable
   }
 
   print("\n".join([customer_information(**customer_data), NOTIFICATIONS]))
